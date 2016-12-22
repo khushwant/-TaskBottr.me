@@ -3,6 +3,7 @@ To run project:
 
 1) Install packages
     npm install
+   and Create Images folder in project directory.
 
 2) Run server:
     node .\server1.js
