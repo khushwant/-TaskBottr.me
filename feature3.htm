@@ -1,0 +1,103 @@
+<html>
+    <body>
+        <form action="http://127.0.0.1:8081/image_upload" enctype = "multipart/form-data" method="POST" >
+            <input type="file" id="files" name="file" />
+            <p id=info></p>
+            <div id="containerDiv" style=" border: 1px solid red;
+        position:absolute;
+        top:130px;
+        left:100px;">
+                <canvas id="canvas" width=400 height=400></canvas>
+            </div>
+            <input type="submit" value="Upload">
+        </form>
+        <script type="text/javascript">
+              //then your code goes here
+                var canvas = document.getElementById("canvas");
+                var ctx = canvas.getContext("2d");
+                var imgWidth = 200;
+                var imgHeight = 300;
+                var size = {
+                    width: imgWidth,
+                    height: imgHeight
+                };
+                var rotation = 0;
+                var deg2Rad = Math.PI / 180;
+                var count1 = 0;
+                var count2 = 0;
+                
+                var img = new Image();
+                img.onload = function () {
+                    imgWidth = img.width;
+                    imgHeight = img.height;
+                    size = {
+                        width: imgWidth,
+                        height: imgHeight
+                    };
+                    draw();
+                }
+                document.getElementById('files').addEventListener('change', handleFileSelect, false);
+                
+            
+                function handleFileSelect(evt) {
+                        var files = evt.target.files;
+                        var f = files[0];
+                        var reader = new FileReader();
+
+                          reader.onload = (function(theFile) {
+                                return function(e) {
+                                img.src =e.target.result;
+                                };
+                         })(f);
+
+                          reader.readAsDataURL(f);
+                }
+               
+               
+                
+                
+                
+
+                function draw() {
+                    canvas.width = size.width;
+                    canvas.height = size.height;
+
+                    // calculate the centerpoint of the canvas
+                    var cx = canvas.width / 2;
+                    var cy = canvas.height / 2;
+                    var info = document.getElementById("info");
+                    info.innerHTML = "canvas size: " + (count1++) + ": " + cx + " / " + cy;
+
+                    // draw the rect in the center of the newly sized canvas
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "rgba(216,216,150,1.0)";
+                    ctx.translate(cx, cy);
+                    ctx.rotate(rotation * deg2Rad);
+                    ctx.drawImage(img, -imgWidth / 2, -imgHeight / 2);
+                }
+
+                document.getElementById("canvas").addEventListener("click", resizeClicked, false);
+
+                function resizeClicked(e) {
+                    rotation += 90;
+                    newSize(imgWidth, imgHeight, rotation);
+                    draw();
+                }
+
+                function newSize(w, h, a) {
+                    var rads = a * Math.PI / 180;
+                    var c = Math.cos(rads);
+                    var s = Math.sin(rads);
+                    if (s < 0) {
+                        s = -s;
+                    }
+                    if (c < 0) {
+                        c = -c;
+                    }
+                    size.width = h * s + w * c;
+                    size.height = h * c + w * s;
+                }
+
+        </script>
+    </body>
+</html>
